@@ -33,3 +33,4 @@ echo Building PyRTcmix \(python setup.py build_ext\)
 python setup.py build_ext
 echo Attempting to install. If this fails, simply run 'sudo python setup.py install' to complete
 python setup.py install
+echo \^---- if that failed, run \"sudo python setup.py install\"
