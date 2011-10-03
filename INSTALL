@@ -1,3 +1,7 @@
+Install Instructions.
+
+For all of these steps in one place, check out install_everything.sh
+
 0) Install the python packages 'python-setuptools', 'python-dev' and 'cython'. If these are
 unavailable to you, see the README on how to use the Makefile
 1) Download the latest rtcmix
