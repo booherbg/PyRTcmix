@@ -1,1 +1,123 @@
-Started git repository
+PyRTcmix
+A python module for interfacing with RTcmix
+Blaine Booher 2010-2011
+frikker@gmail.com
+
+Currently licensed under LGPL v2. Technically an independent
+project not dependent on RTcmix source tree because we dynamically
+load it.
+
+>>> For easy install, see INSTALL file.
+
+-------------
+*** INTRO ***
+-------------
+This module was created because I wanted to be able to use the 
+existing RTcmix library, which exists as a pure shared object
+that is derived from C++, in my existing python project. The 
+goal was to be able to simply do:
+
+import RTcmix
+
+from any vanilla python interpreter and use that object to play
+around with RTcmix's functions. This is the result.
+
+Currently this is completely beta (even alpha) as I have only 
+a rudimentary understanding of RTcmix's actual functionality.
+There are some examples that I have ported (see the .py files
+in this directory such as arpeggiate, flutescale, and sgranr)
+but several other examples that I have tried do not work right.
+
+It's nice putting this out to the RTcmix community because you
+guys can help test it and make sure I'm doing it right. What I
+think are bugs may just be my own misunderstanding of how to use
+RTcmix.
+
+LIMITATIONS:
+Because of the way that I interface into RTcmix, any "cmd" that
+can be passed into RTcmix should be accessible with the python
+module. Very light interfacing allows for RTcmix to do the heavy
+lifting.
+
+One problem though is that C doesn't allow arbitrarily sized 
+parameter passing even though RTcmix *does* allow it. So I have
+had to make a slight hack in the cython code that manually
+checks to see how long the parameter list is and then calls that 
+many parameters by hand. I believe the current arbitrary limit is
+27 parameters, it can go up as high as you need but PyRTcmix.pyx
+will need to be modified.
+
+--------------------
+*** Instructions ***
+--------------------
+
+To compile PyRTcmix do the following:
+install the packages:
+  1)* Cython (package "cython" on ubuntu)
+  2)  python2.6-dev (for building a python module)
+  3)*  python2.6-setuptools (for using setup.py)
+  3)  g++,make,etc.
+  4)  python2.6 (obviously)
+
+* not required to actually build the module if you want to do it
+by hand, without the help of setup.py. See next section.
+
+If all of these are installed, simply run the following commands:
+  0) Edit setup.py so that it points to the absolute path
+     containing your RTcmix build tree. This is the path that
+     has lib/ and include/
+  1) $ python setup.py build
+
+This will run the python setup tools and build PyRTcmix.so. By 
+default it will dump PyRTcmix.so into build/lib-xxx/ so either 
+move the file up to the PyRTcmix folder, or make a symbolic 
+link like I do: ln -s build/lib-xx-/PyRTcmix.so PyRTcmix.so
+
+These are the main steps that happen:
+1) Convert PyRTcmix.pyx => PyRTcmix.cpp (through cython)
+2) Build PyRTcmix.cpp => build/lib-xx/PyRTcmix.so
+
+WARNING: Not sure if PyRTcmix.so will work outside of the 
+directory we built it in since we used absolute paths. Beware.
+
+To test out your build, run:
+$ python flutescale.py
+You should hear the classic flutescale example
+
+ -- or --
+Open up a python shell and type:
+24$ python
+Python 2.6.5 (r265:79063, Apr 16 2010, 13:57:41) 
+[GCC 4.4.3] on linux2
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import PyRTcmix
+>>> PyRTcmix.PyRTcmix()
+<PyRTcmix.PyRTcmix object at 0x7fdc891ff0d8>
+>>>
+
+---------------------------------------------
+*** Building without cython or setuptools ***
+---------------------------------------------
+
+If you already have the .cpp file you don't really have to 
+run the "python setup.py build" every time. This is simply
+a convenient way to get the necessary g++ commands that do
+the actual building. You can even generate a fresh .cpp 
+file from the .pyx file by running: cython -cplus PyRTcmix.pyx
+
+To get an idea of what two g++ commands you need to execute 
+to build the .cpp file, take a look in the Makefile. You 
+basically just need to compile the .cpp file into a .o file
+with the first command, then link the .o file against the .so
+file in the second command. Remember, these two commands are 
+generated for you when you use setup.py.
+
+Makefile (just type "make" - or see Makefile for details):
+
+RTCMIX_ABSOLUTE_PATH=/home/blaine/src/RTcmix/RTcmix-all-120110/
+
+PyRTcmix.so: PyRTcmix.cpp
+	mkdir -p build/temp.linux-x86_64-2.6/
+	mkdir -p build/lib.linux-x86_64-2.6/
+	gcc -pthread -fno-strict-aliasing -DNDEBUG -g -fwrapv -O2 -Wall -Wstrict-prototypes -fPIC -I. -I${RTCMIX_ABSOLUTE_PATH}/include/ -I/usr/include/python2.6 -c PyRTcmix.cpp -o build/temp.linux-x86_64-2.6/PyRTcmix.o
+	g++ -pthread -shared -Wl,-O1 -Wl,-Bsymbolic-functions build/temp.linux-x86_64-2.6/PyRTcmix.o -lstdc++ -o build/lib.linux-x86_64-2.6/PyRTcmix.so -lm -lrtcmix -lgen -L${RTCMIX_ABSOLUTE_PATH}/lib/

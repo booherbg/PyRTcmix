@@ -1,0 +1,28 @@
+0) Install the python packages 'python-setuptools', 'python-dev' and 'cython'. If these are
+unavailable to you, see the README on how to use the Makefile
+1) Download the latest rtcmix
+   -- apply the patch that allows pyRTcmix to work. This is the only kind of tricky
+      part. Point the patch at your rtcmix source directory, like this:
+         $ patch -d ~/src/RTcmix-all-092811/src/rtcmix/ < ~/src/PyRTCmix/load_utils.c.patch
+   -- ./configure (in the rtcmix source directory)
+   -- (for linux only: add the following to site.conf)
+      OPT=-fPIC -O2
+   -- make
+2) edit setup.py so that it has the correct path to RTcmix's source folder
+3) python setup.py build_ext     or      python setup.py install
+
+if all went well, you will have a PyRTCmix.so inside your build folder, and
+if you ran 'install' it'll be available on your python path
+
+To test, run "python examples/arpeggiate.py"
+
+or
+
+$ python
+Python 2.6.5 (r265:79063, Apr 16 2010, 13:57:41) 
+[GCC 4.4.3] on linux2
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import PyRTCmix
+>>> PyRTcmix
+<module 'PyRTcmix' from '/usr/local/lib/python2.6/dist-packages/PyRTcmix/__init__.pyc'>
+>>> 

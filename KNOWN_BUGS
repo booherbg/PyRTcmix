@@ -1,0 +1,12 @@
+1) Flutescale.py used to work. Now it doesn't. Not sure why?
+2) Sometimes the sound output is garbled. Just re-running the script usually fixes it.
+3) i don't know the source of the "python: file not found" error.
+4) If something doesn't work, try adding time.sleep(3) after the inititalization
+----> GOT IT. WTF. The following will work almost every time:
+     from time import sleep
+     But this will always crash:
+     import time
+is 'time' somehow a global variable?!
+5) Sometimes things simply stop working. It's like rtcmix gets a buffer confused 
+and has to wait a few minutes before it can be used again...
+    --> But somehow arpeggiate always seems to work.
