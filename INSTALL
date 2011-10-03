@@ -12,7 +12,8 @@ unavailable to you, see the README on how to use the Makefile
    -- (for linux only: add the following to site.conf)
       OPT=-fPIC -O2
    -- make
-2) edit setup.py so that it has the correct path to RTcmix's source folder
+2) edit setup.py so that it has the correct path to RTcmix's source folder, or 
+    put it in the environment variable RTCMIX_PATH. This is only used at compile time.
 3) python setup.py build_ext     or      python setup.py install
 
 if all went well, you will have a PyRTCmix.so inside your build folder, and
