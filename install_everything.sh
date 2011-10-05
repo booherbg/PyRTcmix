@@ -34,3 +34,8 @@ python setup.py build_ext
 echo Attempting to install. If this fails, simply run 'sudo python setup.py install' to complete
 python setup.py install
 echo \^---- if that failed, run \"sudo python setup.py install\"
+
+#this is also needed as long as /usr/lib is in ldconfig's path
+echo finally, you\'ll need to do this:
+echo ln -s $RTCMIX_PATH/lib/librtcmix.so /usr/lib/
+echo ln -s $RTCMIX_PATH/lib/libgen.so /ur/lib/
